@@ -1,8 +1,6 @@
 # S3AssetsUploader
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/s3_assets_uploader`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Upload Rails assets to S3.
 
 ## Installation
 
@@ -22,7 +20,17 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+In Rakefile:
+
+```ruby
+require 's3_assets_uploader/rake_task'
+namespace :assets do
+  S3AssetsUploader::RakeTask.new(:upload) do |config|
+    config.s3_client = Aws::S3::Client.new(region: 'ap-northeast-1')
+    config.bucket = 'some-bucket'
+  end
+end
+```
 
 ## Development
 
@@ -32,7 +40,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/s3_assets_uploader/fork )
+1. Fork it ( https://github.com/eagletmt/s3_assets_uploader/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
