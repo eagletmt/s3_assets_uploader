@@ -10,6 +10,9 @@ module S3AssetsUploader
 
     def upload
       upload_path(@config.assets_path)
+      @config.additional_paths.each do |path|
+        upload_path(Pathname.new(path))
+      end
     end
 
     private
