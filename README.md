@@ -1,4 +1,6 @@
 # S3AssetsUploader
+[![Gem Version](https://badge.fury.io/rb/s3_assets_uploader.svg)](http://badge.fury.io/rb/s3_assets_uploader)
+[![Build Status](https://travis-ci.org/eagletmt/s3_assets_uploader.svg?branch=master)](https://travis-ci.org/eagletmt/s3_assets_uploader)
 
 Upload Rails assets to S3.
 
