@@ -1,4 +1,5 @@
 require 's3_assets_uploader/uploader'
+require 'mime/types'
 
 RSpec.describe S3AssetsUploader::Uploader do
   let(:assets_path) { File.expand_path('../../fixtures/public/assets', __FILE__) }
@@ -20,6 +21,15 @@ RSpec.describe S3AssetsUploader::Uploader do
     it 'uploads files under assets_path' do
       expect(s3).to receive(:put_object).with(hash_including(bucket: bucket, key: 'assets/application-66ca0fe5fe1e99ca8e08bcddba209a3586654de41f80b810eec30a27790aef53.css'))
       expect(s3).to receive(:put_object).with(hash_including(bucket: bucket, key: 'assets/application-d3e5db26ec3f7b24a11084278a3e42cabf25ffa312bf25c6914d3874cc84396b.js'))
+      uploader.upload
+    end
+
+    it 'uploads files using guessed content-type' do
+      allow(MIME::Types).to receive(:type_for).with('application-66ca0fe5fe1e99ca8e08bcddba209a3586654de41f80b810eec30a27790aef53.css').and_return([double('mime', content_type: 'application/vnd.test')])
+      allow(MIME::Types).to receive(:type_for).with('application-d3e5db26ec3f7b24a11084278a3e42cabf25ffa312bf25c6914d3874cc84396b.js').and_return([])
+      expect(s3).to receive(:put_object).with(hash_including(bucket: bucket, key: 'assets/application-66ca0fe5fe1e99ca8e08bcddba209a3586654de41f80b810eec30a27790aef53.css', content_type: 'application/vnd.test'))
+      expect(s3).to receive(:put_object).with(hash_including(bucket: bucket, key: 'assets/application-d3e5db26ec3f7b24a11084278a3e42cabf25ffa312bf25c6914d3874cc84396b.js', content_type: 'application/octet-stream'))
+
       uploader.upload
     end
 

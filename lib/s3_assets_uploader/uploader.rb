@@ -1,4 +1,5 @@
 require 's3_assets_uploader/config'
+require 'mime/types'
 
 module S3AssetsUploader
   class Uploader
@@ -28,6 +29,7 @@ module S3AssetsUploader
             body: f,
             bucket: @config.bucket,
             key: compute_asset_key(path),
+            content_type: guess_content_type(path),
           )
         end
       end
@@ -38,6 +40,15 @@ module S3AssetsUploader
         File.join(@config.assets_prefix, relative_path(path))
       else
         relative_path(path).to_s
+      end
+    end
+
+    def guess_content_type(path)
+      mime_type = MIME::Types.type_for(path.basename.to_s).first
+      if mime_type
+        mime_type.content_type
+      else
+        'application/octet-stream'
       end
     end
 
