@@ -1,14 +1,16 @@
 require 'aws-sdk'
 
 module S3AssetsUploader
-  class Config < Struct.new(:s3_client, :bucket, :assets_path, :assets_prefix, :additional_paths)
+  class Config < Struct.new(:s3_client, :bucket, :assets_path, :assets_prefix, :additional_paths, :cache_control)
     class ValidationError < StandardError
     end
 
     DEFAULT_ASSETS_PATH = 'public/assets'.freeze
+    DEFAULT_CACHE_CONTROL = 'max-age=2592000, public'
 
     def initialize
       self.assets_path = DEFAULT_ASSETS_PATH
+      self.cache_control = DEFAULT_CACHE_CONTROL
       self.additional_paths = []
     end
 
