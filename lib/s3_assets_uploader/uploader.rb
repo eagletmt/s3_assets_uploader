@@ -30,6 +30,7 @@ module S3AssetsUploader
             bucket: @config.bucket,
             key: compute_asset_key(path),
             content_type: guess_content_type(path),
+            cache_control: @config.cache_control,
           )
         end
       end
