@@ -34,6 +34,27 @@ namespace :assets do
 end
 ```
 
+### Configurations
+- `config.s3_client`
+    - Aws::S3::Client instance to upload files
+    - Default: `Aws::S3::Client.new`
+- `config.bucket`
+    - S3 bucket name
+    - **Required**
+- `config.assets_path`
+    - Local path to assets directory
+    - Default: `"public/assets"`
+- `config.assets_prefix`
+    - Remote assets path prefix
+    - If set, public/assets/foo.png will be uploaded to `"#{assets_prefix}/assets/foo.png"`
+    - Default: `nil`
+- `config.additional_paths`
+    - Additional directories to upload
+    - Default: `[]`
+- `config.cache_control`
+    - cache_control option for S3
+    - Default: `"max-age=2592000, public"`
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
