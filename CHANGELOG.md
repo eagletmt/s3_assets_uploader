@@ -1,3 +1,6 @@
+# 0.4.0
+- Use aws-sdk v3
+
 # 0.3.0
 - Add `config.cache_control` option
     - The default value is `max-age=2592000, public` .
