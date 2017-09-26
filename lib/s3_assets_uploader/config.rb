@@ -1,4 +1,4 @@
-require 'aws-sdk'
+require 'aws-sdk-s3'
 
 module S3AssetsUploader
   class Config < Struct.new(:s3_client, :bucket, :assets_path, :assets_prefix, :additional_paths, :cache_control)
