@@ -19,6 +19,7 @@ module S3AssetsUploader
     private
 
     def upload_path(path)
+      return false if excluded?(path)
       if path.directory?
         path.each_child do |c|
           upload_path(c)
@@ -55,6 +56,10 @@ module S3AssetsUploader
 
     def relative_path(path)
       path.relative_path_from(@config.public_path)
+    end
+
+    def excluded?(path)
+      @config.excludes.find{|pattern| path.to_s.match(pattern) }
     end
   end
 end
