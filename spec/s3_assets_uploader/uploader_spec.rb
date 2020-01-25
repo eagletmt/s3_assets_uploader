@@ -6,6 +6,7 @@ RSpec.describe S3AssetsUploader::Uploader do
   let(:assets_prefix) { nil }
   let(:cache_control) { 'public' }
   let(:additional_paths) { [] }
+  let(:excludes) { [] }
   let(:bucket) { 'bucket-name' }
   let(:s3) { double('Aws::S3::Client') }
   let(:uploader) do
@@ -16,6 +17,7 @@ RSpec.describe S3AssetsUploader::Uploader do
       config.assets_prefix = assets_prefix
       config.cache_control = cache_control
       config.additional_paths = additional_paths
+      config.excludes = excludes
     end
   end
 
@@ -62,6 +64,16 @@ RSpec.describe S3AssetsUploader::Uploader do
       it 'uploads files with specified Cache-Control' do
         expect(s3).to receive(:put_object).with(hash_including(bucket: bucket, key: 'assets/application-66ca0fe5fe1e99ca8e08bcddba209a3586654de41f80b810eec30a27790aef53.css', cache_control: 'max-age=86400, public'))
         expect(s3).to receive(:put_object).with(hash_including(bucket: bucket, key: 'assets/application-d3e5db26ec3f7b24a11084278a3e42cabf25ffa312bf25c6914d3874cc84396b.js', cache_control: 'max-age=86400, public'))
+        uploader.upload
+      end
+    end
+
+    context 'with excludes' do
+      let(:excludes) { ['.js', /\.css/] }
+
+      it 'uploads files with specified Cache-Control' do
+        expect(s3).not_to receive(:put_object).with(hash_including(bucket: bucket, key: 'assets/application-66ca0fe5fe1e99ca8e08bcddba209a3586654de41f80b810eec30a27790aef53.css'))
+        expect(s3).not_to receive(:put_object).with(hash_including(bucket: bucket, key: 'assets/application-d3e5db26ec3f7b24a11084278a3e42cabf25ffa312bf25c6914d3874cc84396b.js'))
         uploader.upload
       end
     end
