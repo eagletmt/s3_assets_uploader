@@ -33,5 +33,21 @@ RSpec.describe S3AssetsUploader::Config do
         end
       end
     end
+
+    context 'with content_type block' do
+      before do
+        config.bucket = 'some-bucket'
+        config.content_type do |path|
+          next 'application/rss+xml' if path =~ /rss\.xml$/
+          next 'application/atom+xml' if path =~ /atom\.xml$/
+        end
+      end
+
+      it 'return content_type' do
+        expect(config.guess_content_type('public/rss.xml')).to eq 'application/rss+xml'
+        expect(config.guess_content_type('public/atom.xml')).to eq 'application/atom+xml'
+        expect(config.guess_content_type('hello.jpg')).to eq nil
+      end
+    end
   end
 end

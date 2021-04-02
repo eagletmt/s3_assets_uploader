@@ -45,6 +45,9 @@ module S3AssetsUploader
     end
 
     def guess_content_type(path)
+      content_type = @config.guess_content_type(path)
+      return content_type if content_type
+
       mime_type = MIME::Types.type_for(path.basename.to_s).first
       if mime_type
         mime_type.content_type
