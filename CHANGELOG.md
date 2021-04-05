@@ -1,3 +1,6 @@
+# 0.5.0
+- Add `config.content_type` option
+
 # 0.4.0
 - Use aws-sdk v3
 
