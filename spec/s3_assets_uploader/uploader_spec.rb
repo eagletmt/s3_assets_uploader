@@ -6,6 +6,7 @@ RSpec.describe S3AssetsUploader::Uploader do
   let(:assets_prefix) { nil }
   let(:cache_control) { 'public' }
   let(:additional_paths) { [] }
+  let(:content_type) { nil }
   let(:bucket) { 'bucket-name' }
   let(:s3) { double('Aws::S3::Client') }
   let(:uploader) do
@@ -16,6 +17,7 @@ RSpec.describe S3AssetsUploader::Uploader do
       config.assets_prefix = assets_prefix
       config.cache_control = cache_control
       config.additional_paths = additional_paths
+      config.content_type = content_type
     end
   end
 
@@ -64,6 +66,19 @@ RSpec.describe S3AssetsUploader::Uploader do
         expect(s3).to receive(:put_object).with(hash_including(bucket: bucket, key: 'assets/application-d3e5db26ec3f7b24a11084278a3e42cabf25ffa312bf25c6914d3874cc84396b.js', cache_control: 'max-age=86400, public'))
         uploader.upload
       end
+    end
+  end
+
+  describe 'guess_content_type' do
+    let(:content_type) do
+      proc do |path|
+        next 'application/rss+xml' if path =~ /rss\.xml$/
+        next 'application/atom+xml' if path =~ /atom\.xml$/
+      end
+    end
+
+    it 'return custom content_type when matched' do
+      expect(uploader.send(:guess_content_type, 'public/rss.xml')).to eq 'application/rss+xml'
     end
   end
 end

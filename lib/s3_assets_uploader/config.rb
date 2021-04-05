@@ -1,7 +1,7 @@
 require 'aws-sdk-s3'
 
 module S3AssetsUploader
-  class Config < Struct.new(:s3_client, :bucket, :assets_path, :assets_prefix, :additional_paths, :cache_control)
+  class Config < Struct.new(:s3_client, :bucket, :assets_path, :assets_prefix, :additional_paths, :cache_control, :content_type)
     class ValidationError < StandardError
     end
 
@@ -12,6 +12,7 @@ module S3AssetsUploader
       self.assets_path = DEFAULT_ASSETS_PATH
       self.cache_control = DEFAULT_CACHE_CONTROL
       self.additional_paths = []
+      self.content_type = nil
     end
 
     def assets_path
@@ -31,6 +32,16 @@ module S3AssetsUploader
       end
       self.s3_client ||= create_default_client
       true
+    end
+
+    def content_type(&block)
+      self[:content_type] = block
+    end
+
+    def guess_content_type(path)
+      return unless self[:content_type]
+
+      self[:content_type].call(path)
     end
 
     private
