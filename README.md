@@ -54,6 +54,10 @@ end
 - `config.cache_control`
     - cache_control option for S3
     - Default: `"max-age=2592000, public"`
+- `config.content_type`
+    - Set custom handler to determine content-type of the object
+    - When the handler returns nil, the content-type is guessed from its extension
+    - Default: `nil`
 
 ## Development
 
