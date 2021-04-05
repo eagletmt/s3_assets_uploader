@@ -76,9 +76,10 @@ RSpec.describe S3AssetsUploader::Uploader do
         next 'application/atom+xml' if path =~ /atom\.xml$/
       end
     end
+    let(:path) { Pathname.new('public/rss.xml') }
 
     it 'return custom content_type when matched' do
-      expect(uploader.send(:guess_content_type, 'public/rss.xml')).to eq 'application/rss+xml'
+      expect(uploader.send(:guess_content_type, path)).to eq 'application/rss+xml'
     end
   end
 end
